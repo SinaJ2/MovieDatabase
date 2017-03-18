@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iconView"
+        android:layout_width="50dp"
+        android:layout_height="75dp"
+        android:padding="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true" />
+
+    <TextView
+        android:id="@+id/titleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:paddingTop="8dp"
+        android:paddingLeft="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/iconView" />
+
+    <TextView
+        android:id="@+id/releaseRatingView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingLeft="20dp"
+        android:paddingBottom="5dp"
+        android:layout_below="@+id/titleView"
+        android:layout_toRightOf="@+id/iconView" />
+
+    <!-- android:textAppearance="?android:attr/textAppearanceMedium" -->
+
+</RelativeLayout>
+

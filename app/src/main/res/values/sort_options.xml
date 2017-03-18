@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array
+        name="sort_options">
+        <item>Popular (Most)</item>
+        <item>Popular (Least)</item>
+        <item>Rating (High)</item>
+        <item>Rating (Low)</item>
+        <item>Title (A-Z)</item>
+        <item>Title (Z-A)</item>
+        <item>Date (New)</item>
+        <item>Date (Old)</item>
+    </string-array>
+</resources>
