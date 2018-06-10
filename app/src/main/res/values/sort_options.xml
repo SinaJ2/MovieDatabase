@@ -2,13 +2,13 @@
 <resources>
     <string-array
         name="sort_options">
-        <item>Popular (Most)</item>
-        <item>Popular (Least)</item>
-        <item>Rating (High)</item>
-        <item>Rating (Low)</item>
-        <item>Title (A-Z)</item>
-        <item>Title (Z-A)</item>
-        <item>Date (New)</item>
-        <item>Date (Old)</item>
+        <item>@string/sort_option1</item>
+        <item>@string/sort_option2</item>
+        <item>@string/sort_option3</item>
+        <item>@string/sort_option4</item>
+        <item>@string/sort_option5</item>
+        <item>@string/sort_option6</item>
+        <item>@string/sort_option7</item>
+        <item>@string/sort_option8</item>
     </string-array>
 </resources>

@@ -72,7 +72,12 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         viewHolder.releaseRatingView.setText(movie.getReleaseDate() + "  |  " + movie.getRating());
 
         // Set movie poster icon for iconView.
-        Picasso.with(context).load(movie.getPosterURL()).resize(100,150).into(viewHolder.iconView);
+        String posterURL = movie.getPosterURL();
+        if (!posterURL.equals("")) {
+            Picasso.with(context).load(movie.getPosterURL()).resize(100, 150).into(viewHolder.iconView);
+        } else {
+            viewHolder.iconView.setImageResource(R.drawable.no_poster);
+        }
 
         return convertView;
     }

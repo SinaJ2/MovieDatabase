@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,25 +31,49 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class MovieListActivity extends AppCompatActivity {
+    // The Movie Database (TMDb) API key.
+    public static final String API_KEY = "c69c4ae8012e85b7870ae0a54f00d53b";
+
+    // Keys for Bundle extras and movie attributes.
+    public static final String SELECTION_KEY = "selection";
+    public static final String INDEX_KEY = "index";
+    public static final String POPULARITY_KEY = "popularity";
+    public static final String RATING_KEY = "vote_average";
+    public static final String TITLE_KEY = "original_title";
+    public static final String RELEASE_DATE_KEY = "release_date";
+    public static final String OVERVIEW_KEY = "overview";
+    public static final String POSTER_PATH_KEY = "poster_path";
+
+    // Sort parameters.
+    public static final String DESCENDING = ".desc";
+    public static final String ASCENDING = ".asc";
+    public static final String POPULARITY_DESC = POPULARITY_KEY + DESCENDING;
+    public static final String POPULARITY_ASC = POPULARITY_KEY + ASCENDING;
+    public static final String RATING_DESC = RATING_KEY + DESCENDING;
+    public static final String RATING_ASC = RATING_KEY + ASCENDING;
+    public static final String TITLE_ASC = TITLE_KEY + ASCENDING;
+    public static final String TITLE_DESC = TITLE_KEY + DESCENDING;
+    public static final String RELEASE_DATE_DESC = RELEASE_DATE_KEY + DESCENDING;
+    public static final String RELEASE_DATE_ASC = RELEASE_DATE_KEY + ASCENDING;
 
     // For storing movie details.
     private ArrayList<Movie> movies;
+    private ArrayAdapter myMovieAdapter;
 
     // For displaying movie details.
     private ListView myListView;
     private View footerView;
-    private ArrayAdapter myMovieAdapter;
 
     // Flag to stop trying to load more movies when scrolled all the way down after
-    // a failed connection (most likely because every existing page has already been looked at)
+    // a failed connection (most likely because every existing page has already been looked at).
     private boolean scrollingEnabled;
 
     // Flag to prevent executing multiple network tasks with a single scroll event.
     private boolean loadingMore;
 
+    // For sorting option.
     private String setSortBy;
     private String currentSort;
-
     private int selectIndex;
 
     @Override
@@ -63,11 +86,11 @@ public class MovieListActivity extends AppCompatActivity {
         // If user changes sort criteria, a new activity starts with that information
         // passed along.
         if (extras != null) {
-            setSortBy = extras.getString("selection");
-            selectIndex = extras.getInt("index");
+            setSortBy = extras.getString(SELECTION_KEY);
+            selectIndex = extras.getInt(INDEX_KEY);
         }
         else {
-            setSortBy = "popularity.desc";
+            setSortBy = POPULARITY_DESC;
             selectIndex = -1;
         }
         currentSort = setSortBy;
@@ -97,13 +120,12 @@ public class MovieListActivity extends AppCompatActivity {
 
         myListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             // Setup URL query string components.
-            private String apiKey = "c69c4ae8012e85b7870ae0a54f00d53b";
             private String sortBy = setSortBy;
             private int pageNo = 1;
 
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-                // Unused
+                // Unused.
             }
 
             @Override
@@ -115,7 +137,7 @@ public class MovieListActivity extends AppCompatActivity {
 
                     // Connects to themoviedb.org to retrieve movie info.
                     // Need to do this in a separate background thread.
-                    new NetworkTask().execute(apiKey, sortBy, Integer.toString(pageNo));
+                    new NetworkTask().execute(sortBy, Integer.toString(pageNo));
 
                     // The first GET request receives information on movies found on the first page.
                     // We want to keep loading movies on subsequent pages as the user continues to
@@ -132,7 +154,7 @@ public class MovieListActivity extends AppCompatActivity {
 
         // Create a Spinner object to display the sort by options.
         MenuItem item = menu.findItem(R.id.spinner);
-        Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
+        Spinner spinner = (Spinner)item.getActionView();
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.sort_options, R.layout.custom_spinner);
@@ -141,7 +163,7 @@ public class MovieListActivity extends AppCompatActivity {
         spinner.setAdapter(adapter);
 
         // If a selection resulted in a new activity, set the starting selection to the option
-        // the user selected. Otherwise it will default to the first option, popularity.desc,
+        // the user selected. Otherwise it will default to the first option, POPULARITY_DESC,
         // which will result in another intent to a new activity as another option change will
         // falsely be detected.
         if (selectIndex != -1) {
@@ -156,31 +178,31 @@ public class MovieListActivity extends AppCompatActivity {
                 // they want the movies to be sorted.
                 switch (position) {
                     case 0:
-                        setSortBy = "popularity.desc";
+                        setSortBy = POPULARITY_DESC;
                         break;
                     case 1:
-                        setSortBy = "popularity.asc";
+                        setSortBy = POPULARITY_ASC;
                         break;
                     case 2:
-                        setSortBy = "vote_average.desc";
+                        setSortBy = RATING_DESC;
                         break;
                     case 3:
-                        setSortBy = "vote_average.asc";
+                        setSortBy = RATING_ASC;
                         break;
                     case 4:
-                        setSortBy = "original_title.asc";
+                        setSortBy = TITLE_ASC;
                         break;
                     case 5:
-                        setSortBy = "original_title.desc";
+                        setSortBy = TITLE_DESC;
                         break;
                     case 6:
-                        setSortBy = "release_date.desc";
+                        setSortBy = RELEASE_DATE_DESC;
                         break;
                     case 7:
-                        setSortBy = "release_date.asc";
+                        setSortBy = RELEASE_DATE_ASC;
                         break;
                     default:
-                        setSortBy = "popularity.desc";
+                        setSortBy = POPULARITY_DESC;
                         break;
                 }
 
@@ -194,15 +216,16 @@ public class MovieListActivity extends AppCompatActivity {
                 // Start a new MovieListActivity to clear movies already loaded and start loading
                 // again based on the sorting option.
                 Intent intent = new Intent(MovieListActivity.this, MovieListActivity.class);
-                intent.putExtra("selection", setSortBy);
-                intent.putExtra("index", position);
+                intent.putExtra(SELECTION_KEY, setSortBy);
+                intent.putExtra(INDEX_KEY, position);
                 startActivity(intent);
                 finish();
+                overridePendingTransition(0, 0);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Unused
+                // Unused.
             }
         });
 
@@ -229,11 +252,10 @@ public class MovieListActivity extends AppCompatActivity {
     private class NetworkTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
-            // Get the passed in paramaters for the api_key, the sort_by option, and the page number.
-            String apiKey = params[0];
-            String sortBy = params[1];
-            String pageNo = params[2];
-            String urlString = "https://api.themoviedb.org/3/discover/movie?api_key=" + apiKey + "&language=en-US&sort_by=" + sortBy + "&include_adult=false&include_video=false&page=" + pageNo;
+            // Get the passed in parameters for the sort_by option and the page number.
+            String sortBy = params[0];
+            String pageNo = params[1];
+            String urlString = "https://api.themoviedb.org/3/discover/movie?api_key=" + API_KEY + "&language=en-US&sort_by=" + sortBy + "&include_adult=false&include_video=false&page=" + pageNo;
 
             HttpURLConnection urlConnection = null;
             InputStream in;
@@ -309,12 +331,31 @@ public class MovieListActivity extends AppCompatActivity {
                 for (int i = 0; i < noOfMovies; i++) {
                     JSONObject jsonObject = resultsJSON.getJSONObject(i);
 
-                    String title = jsonObject.getString("original_title");
-                    String releaseDate = "Released: " + jsonObject.getString("release_date");
-                    String rating = "Rating: " + jsonObject.getString("vote_average") + "/10";
-                    String overview = jsonObject.getString("overview");
-                    String posterPath = jsonObject.getString("poster_path");
-                    String posterURL = "https://image.tmdb.org/t/p/w640" + posterPath;
+                    String title = "";
+                    String releaseDate = getResources().getString(R.string.released) + " " + getResources().getString(R.string.not_available);
+                    String rating = getResources().getString(R.string.rating) + " " + getResources().getString(R.string.not_available);
+                    String overview = "";
+                    String posterPath = "";
+                    String posterURL = "";
+
+                    if (jsonObject.has(TITLE_KEY)) {
+                        title = jsonObject.getString(TITLE_KEY);
+                    }
+                    if (jsonObject.has(RELEASE_DATE_KEY)) {
+                        releaseDate = getResources().getString(R.string.released) + " " + jsonObject.getString(RELEASE_DATE_KEY);
+                    }
+                    if (jsonObject.has(RATING_KEY)) {
+                        rating = getResources().getString(R.string.rating) + " " + jsonObject.getString(RATING_KEY) + "/10";
+                    }
+                    if (jsonObject.has(OVERVIEW_KEY)) {
+                        overview = jsonObject.getString(OVERVIEW_KEY);
+                    }
+                    if (jsonObject.has(POSTER_PATH_KEY)) {
+                        posterPath = jsonObject.getString(POSTER_PATH_KEY);
+                    }
+                    if (!posterPath.equals("") && !posterPath.equals("null")) {
+                        posterURL = "https://image.tmdb.org/t/p/original" + posterPath;
+                    }
 
                     movies.add(new Movie(title, releaseDate, rating, overview, posterURL));
                 }
@@ -358,11 +399,11 @@ public class MovieListActivity extends AppCompatActivity {
                     Movie selectedMovie = movies.get(position);
 
                     Intent intent = new Intent(MovieListActivity.this, MovieOverviewActivity.class);
-                    intent.putExtra("title", selectedMovie.getTitle());
-                    intent.putExtra("releaseDate", selectedMovie.getReleaseDate());
-                    intent.putExtra("rating", selectedMovie.getRating());
-                    intent.putExtra("overview", selectedMovie.getOverview());
-                    intent.putExtra("posterURL", selectedMovie.getPosterURL());
+                    intent.putExtra(TITLE_KEY, selectedMovie.getTitle());
+                    intent.putExtra(RELEASE_DATE_KEY, selectedMovie.getReleaseDate());
+                    intent.putExtra(RATING_KEY, selectedMovie.getRating());
+                    intent.putExtra(OVERVIEW_KEY, selectedMovie.getOverview());
+                    intent.putExtra(POSTER_PATH_KEY, selectedMovie.getPosterURL());
                     startActivity(intent);
                 }
             });

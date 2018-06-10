@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Movie Database</string>
+    <string name="loading">Loading&#8230;</string>
+    <string name="sort_option1">Popular (Most)</string>
+    <string name="sort_option2">Popular (Least)</string>
+    <string name="sort_option3">Rating (High)</string>
+    <string name="sort_option4">Rating (Low)</string>
+    <string name="sort_option5">Title (A-Z)</string>
+    <string name="sort_option6">Title (Z-A)</string>
+    <string name="sort_option7">Date (New)</string>
+    <string name="sort_option8">Date (Old)</string>
+    <string name="released">Released:</string>
+    <string name="rating">Rating:</string>
+    <string name="not_available">N/A</string>
 </resources>

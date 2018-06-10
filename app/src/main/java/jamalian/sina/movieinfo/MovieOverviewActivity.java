@@ -22,18 +22,23 @@ public class MovieOverviewActivity extends AppCompatActivity {
 
         if (extras != null) {
             // Get selected movie's details.
-            String title = extras.getString("title");
-            String releaseDate = extras.getString("releaseDate");
-            String rating = extras.getString("rating");
-            String overview = extras.getString("overview");
-            String posterURL = extras.getString("posterURL");
+            String title = extras.getString(MovieListActivity.TITLE_KEY);
+            String releaseDate = extras.getString(MovieListActivity.RELEASE_DATE_KEY);
+            String rating = extras.getString(MovieListActivity.RATING_KEY);
+            String overview = extras.getString(MovieListActivity.OVERVIEW_KEY);
+            String posterURL = extras.getString(MovieListActivity.POSTER_PATH_KEY);
 
             ImageView iconView = (ImageView)findViewById(R.id.iconView);
             TextView releaseRatingView = (TextView)findViewById(R.id.releaseRatingView);
             TextView overviewView = (TextView)findViewById(R.id.overviewView);
 
             // Display movie details.
-            Picasso.with(this).load(posterURL).resize(400,600).into(iconView);
+            if (!posterURL.equals("")) {
+                Picasso.with(this).load(posterURL).resize(400, 600).into(iconView);
+            } else {
+                iconView.setImageResource(R.drawable.no_poster);
+            }
+
             releaseRatingView.setText(releaseDate + "  |  " + rating);
             overviewView.setText(overview);
             setTitle(title);
